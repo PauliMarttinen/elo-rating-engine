@@ -9,54 +9,120 @@ import AddNewMatch from "./views/AddNewMatch";
 
 import './App.css';
 import csvParser from "./utilities/csvParser";
+import formatDate from "./utilities/formatDate";
+import roundToFirstDecimalPoint from "./utilities/roundToFirstDecimalPoint";
+import alphabetizeObjects from "./utilities/alphabetizeObjects";
 
 import {DefaultButton} from "@fluentui/react";
 
 const App = () => {
-  /* const [groups, setGroups] = useState([
-    {id: 1, name: "m", nameHistory: []},
-    {id: 2, name: "n", nameHistory: []}
-  ])
-  const [players, setPlayers] = useState([
-    {id: 1, name: "Kempeleen Kiri", nameHistory: [], group: 1, groupHistory: []},
-    {id: 2, name: "Vimpelin Veto", nameHistory: [], group: 1, groupHistory: []},
-    {id: 3, name: "Joensuun Maila", nameHistory: [], group: 1, groupHistory: []},
-    {id: 4, name: "Haminan Palloilijat", nameHistory: [], group: 1, groupHistory: []},
-    {id: 5, name: "Kirittäret, Jyväskylä", nameHistory: [], group: 2, groupHistory: []},
-    {id: 6, name: "Siilinjärven Pesis", nameHistory: [], group: 2, groupHistory: []},
-    {id: 7, name: "Mynämäen Vesa", nameHistory: [], group: 2, groupHistory: []},
-    {id: 8, name: "Pesäkarhut, Pori", nameHistory: [], group: 2, groupHistory: []},
-  ]);
-  const [matches, setMatches] = useState([
-    {date: "2021-06-02", playerAGroup: "m", playerBGroup: "m", playerA: "Kempeleen Kiri", playerB: "Vimpelin Veto", result: "0", playerARatingAfter: 1948, playerBRatingAfter: 2016},
-    {date: "2021-06-02", playerAGroup: "m", playerBGroup: "m", playerA: "Joensuun Maila", playerB: "Haminan Palloilijat", result: "1", playerARatingAfter: 2016, playerBRatingAfter: 1984},
-    {date: "2021-06-02", playerAGroup: "n", playerBGroup: "n", playerA: "Kirittäret, Jyväskylä", playerB: "Siilinjärven Pesis", result: "1", playerARatingAfter: 2016, playerBRatingAfter: 1984},
-    {date: "2021-06-02", playerAGroup: "n", playerBGroup: "n", playerA: "Mynämäen Vesa", playerB: "Pesäkarhut, Pori", result: "0", playerARatingAfter: 1984, playerBRatingAfter: 2016},
-    {date: "2021-06-03", playerAGroup: "m", playerBGroup: "m", playerA: "Kiteen Pallo -90", playerB: "Pattijoen Urheilijat, Raahe", result: "1", playerARatingAfter: 2016, playerBRatingAfter: 1984},
-    {date: "2021-06-03", playerAGroup: "n", playerBGroup: "n", playerA: "Lapuan Virkiä", playerB: "Kempeleen Kiri", result: "1", playerARatingAfter: 2000, playerBRatingAfter: 1968},
-    {date: "2021-06-03", playerAGroup: "m", playerBGroup: "m", playerA: "Koskenkorvan Urheilijat", playerB: "Imatran Pallo-Veikot", result: "0", playerARatingAfter: 1984, playerBRatingAfter: 2016},
-    {date: "2021-06-03", playerAGroup: "m", playerBGroup: "m", playerA: "Sotkamon Jymy", playerB: "Siilinjärven Pesis", result: "1", playerARatingAfter: 2000, playerBRatingAfter: 1968},
-    {date: "2021-06-04", playerAGroup: "m", playerBGroup: "m", playerA: "Manse PP, Tampere", playerB: "Hyvinkään Tahko", result: "1", playerARatingAfter: 2016, playerBRatingAfter: 1984},
-    {date: "2021-06-04", playerAGroup: "m", playerBGroup: "m", playerA: "Joensuun Maila", playerB: "Kempeleen Kiri", result: "1", playerARatingAfter: 2029.8, playerBRatingAfter: 1954.2},
-    {date: "2021-06-07", playerAGroup: "m", playerBGroup: "m", playerA: "Seinäjoen JymyJussit", playerB: "Koskenkorvan Urheilijat", result: "2/3", playerARatingAfter: 1989.1, playerBRatingAfter: 1978.1}
-  ]); */
   const VIEWS = {
     MANAGE_GROUPS: 1,
     MANAGE_PLAYERS: 2,
     ADD_NEW_MATCH: 3
   };
 
-  //const [formattedMatches, setFormattedMatches] = useState([]);
   const [groups, setGroups] = useState([]);
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
   const [view, setView] = useState(VIEWS.ADD_NEW_MATCH)
 
+  const getGroupNameAtTime = (data, time, id) => {
+    const group = data.find(datum => datum.id === id);
+    return group.name[group.name.length - 1].name;
+  };
+
+  const getPlayerGroupAtTime = (groupData, playerData, time, id) => {
+    const player = playerData.find(datum => datum.id === id);
+    return getGroupNameAtTime(groupData, time, player.group[player.group.length - 1].group);
+  };
+
+  const getPlayerNameAtTime = (data, time, id) => {
+    const player = data.find(datum => datum.id === id);
+    return player.name[player.name.length - 1].name;
+  };
+
   const setData = (groupsData, playersData, matchesData) => {
     setGroups(groupsData);
-    setPlayers(playersData);
+    /* setPlayers(playersData);
     setMatches(matchesData);
   };
+
+  useEffect(() => { */
+    const ratings = [];
+
+    setMatches(matchesData.map(match => {
+      const date = formatDate(new Date(match.date * 1000));
+      //const date = match.date;
+      const playerAGroup = getPlayerGroupAtTime(groupsData, playersData, match.date, match.playerA);
+      const playerBGroup = getPlayerGroupAtTime(groupsData, playersData, match.date, match.playerB);
+      const playerA = match.playerA;
+      const playerB = match.playerB;
+      const playerAName = getPlayerNameAtTime(playersData, match.date, match.playerA);
+      const playerBName = getPlayerNameAtTime(playersData, match.date, match.playerB);
+      const result = {
+        1: 1,
+        0.75: 3/4,
+        0.66: 2/3,
+        0.5: 1/2,
+        0.33: 1/3,
+        0.25: 1/4,
+        0: 0
+      }[match.result];
+      
+      const coefficient = 32;
+      const scale = 400;
+      const initialRating = 2000;
+
+      if (!ratings.find(player => player.id === playerA))
+      {
+        ratings.push({
+          group: playerAGroup,
+          id: playerA,
+          name: playerAName,
+          rating: initialRating
+        });
+      }
+
+      if (!ratings.find(player => player.id === playerB))
+      {
+        ratings.push({
+          group: playerBGroup,
+          id: playerB,
+          name: playerBName,
+          rating: initialRating
+        });
+      }
+
+      const playerARatingIndex = ratings.findIndex(player => player.id === playerA);
+      const playerARatingBefore = ratings[playerARatingIndex].rating;
+      const playerBRatingIndex = ratings.findIndex(player => player.id === playerB);
+      const playerBRatingBefore = ratings[playerBRatingIndex].rating;
+
+      const expectedA = 1/(1+Math.pow(10, (playerBRatingBefore - playerARatingBefore)/scale));
+      const expectedB = 1/(1+Math.pow(10, (playerARatingBefore - playerBRatingBefore)/scale));
+      const playerARatingAfter = roundToFirstDecimalPoint(playerARatingBefore + coefficient*(result - expectedA));
+      const playerBRatingAfter = roundToFirstDecimalPoint(playerBRatingBefore + coefficient*((1 - result) - expectedB));
+
+      ratings[playerARatingIndex].rating = playerARatingAfter;
+      ratings[playerBRatingIndex].rating = playerBRatingAfter;
+
+      return {
+        date,
+        playerAGroup,
+        playerBGroup,
+        playerA,
+        playerB,
+        playerAName,
+        playerBName,
+        playerARatingChange: `${playerARatingBefore} → ${playerARatingAfter}`,
+        playerBRatingChange: `${playerBRatingBefore} → ${playerBRatingAfter}`,
+        result
+      };
+    }));
+    setPlayers(alphabetizeObjects(ratings, "rating").reverse());
+  };
+  /* }, [matches]); */
 
   return (
     <div className={"App"}>
@@ -65,9 +131,9 @@ const App = () => {
         onSave={setData}
       />
       <EloRatings
-        groupsData={groups}
-        playersData={players}
-        matchesData={matches}
+        groups={groups}
+        players={players}
+        matches={matches}
       />
       <DefaultButton
         disabled={view === VIEWS.MANAGE_GROUPS}
@@ -107,145 +173,6 @@ const App = () => {
       }
     </div>
   );
-
-  /* const getRatingOfGroup = (group) => {
-    return 2000;
-  };
-
-  const getGroupOfPlayer = (player) => {
-    for (let match = 0; match < matches.length; match++)
-    {
-      if (matches.playerA === player)
-      {
-        return matches.playerAGroup;
-      }
-      else if (matches.playerB === player)
-      {
-        return matches.playerBGroup;
-      }
-    }
-
-    return undefined;
-  };
-
-  const getRatingOfPlayer = (player) => {
-    const matchesWithPlayer = matches.filter(match => match.playerA === player || match.playerB === player);
-
-    if (matchesWithPlayer.length === 0)
-    {
-      return undefined;
-    }
-
-    const lastMatch = matchesWithPlayer[matchesWithPlayer.length - 1];
-    
-    if (lastMatch.playerA === player)
-    {
-      return lastMatch.playerARatingAfter;
-    }
-    else if (lastMatch.playerB === player)
-    {
-      return lastMatch.playerBRatingAfter;
-    }
-  };
-
-  const getRatingsOfPlayers = (playerA, playerB) => {
-    let playerARating = getRatingOfPlayer(playerA);
-    let playerBRating = getRatingOfPlayer(playerB);
-        
-    if (playerARating === undefined && playerBRating === undefined)
-    {
-      const bothRatings = (getRatingOfGroup(getGroupOfPlayer(playerA)) + getRatingOfGroup(getGroupOfPlayer(playerB)))/2;
-      return {
-        playerARating: bothRatings,
-        playerBRating: bothRatings
-      }
-    }
-    else
-    {
-      if (playerARating === undefined)
-      {
-        playerARating = getRatingOfGroup(getGroupOfPlayer(playerA));
-      }
-      if (playerBRating === undefined)
-      {
-        playerBRating = getRatingOfGroup(getGroupOfPlayer(playerB));
-      }
-    }
-
-    return {
-      playerARating,
-      playerBRating
-    };
-  };
-
-  const getAllPlayers = () => {
-    const players = [];
-
-    for (let match = matches.length - 1; match >= 0; match--)
-    {
-      if (!players.some(player => player.player === matches[match].playerA && player.group === matches[match].playerAGroup))
-      {
-        players.push({
-          player: matches[match].playerA,
-          group: matches[match].playerAGroup,
-          rating: matches[match].playerARatingAfter
-        });
-      }
-      if (!players.some(player => player.player === matches[match].playerB && player.group === matches[match].playerAGroup))
-      {
-        players.push({
-          player: matches[match].playerB,
-          group: matches[match].playerAGroup,
-          rating: matches[match].playerBRatingAfter
-        });
-      }
-    }
-
-    return players;
-  };
-
-  const formatResultString = (result) => {
-    switch (result)
-    {
-      case 1:
-        return "1";
-      case 0.66:
-        return "2/3";
-      case 0.5:
-        return "0.5";
-      case 0.33:
-        return "1/3";
-      case 0:
-        return "0";
-    }
-  };
-
-  const addMatch = (date, playerAGroup, playerBGroup, playerAName, playerBName, result, playerARatingAfter, playerBRatingAfter) => {
-    setMatches(previousMatches => [...previousMatches, {
-      date: formatDate(date),
-      playerAGroup,
-      playerBGroup,
-      playerA: playerAName,
-      playerB: playerBName,
-      result: formatResultString(result),
-      playerARatingAfter,
-      playerBRatingAfter
-    }]);
-  };
-
-  return (
-    <div className={"App"}>
-      <h1>Elo Rating Engine</h1>
-      <CSVPopup/>
-      <MatchesTable
-        matchesData={matches}
-      />
-      <NewMatchForm
-        players={getAllPlayers()}
-        onAddMatch={addMatch}
-      />
-    </div>
-  ); */
 };
 
 export default App;

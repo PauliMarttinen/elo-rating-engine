@@ -6,21 +6,21 @@ import {
 import Matches from "./views/Matches";
 import Ratings from "./views/Ratings";
 
-import formatDate from "./utilities/formatDate";
+/* import formatDate from "./utilities/formatDate";
 import roundToFirstDecimalPoint from "./utilities/roundToFirstDecimalPoint";
-import alphabetizeObjects from "./utilities/alphabetizeObjects";
+import alphabetizeObjects from "./utilities/alphabetizeObjects"; */
 
-const EloRatings = ({groupsData, playersData, matchesData}) => {
+const EloRatings = ({groups, players, matches}) => {
   const VIEWS = {
     TABLE_OF_MATCHES: 0,
     TABLE_OF_RATINGS: 1
   };
 
-  const [matches, setMatches] = useState(matchesData);
-  const [players, setPlayers] = useState([]);
+  /* const [matches, setMatches] = useState(matchesData);
+  const [players, setPlayers] = useState([]); */
   const [view, setView] = useState(VIEWS.TABLE_OF_MATCHES);
 
-  const getGroupNameAtTime = (time, id) => {
+/*   const getGroupNameAtTime = (time, id) => {
     const thisGroup = groupsData.find(group => group.id === id);
     return thisGroup.name[thisGroup.name.length - 1].name;
   };
@@ -33,9 +33,9 @@ const EloRatings = ({groupsData, playersData, matchesData}) => {
   const getPlayerNameAtTime = (time, id) => {
     const thisPlayer = playersData.find(player => player.id === id);
     return thisPlayer.name[thisPlayer.name.length - 1].name;
-  };
+  }; */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const ratings = [];
 
     setMatches(matchesData.map(match => {
@@ -107,7 +107,7 @@ const EloRatings = ({groupsData, playersData, matchesData}) => {
       };
     }));
     setPlayers(alphabetizeObjects(ratings, "rating").reverse());
-  }, [matchesData]);
+  }, [matchesData]); */
 
   return (
     <div>

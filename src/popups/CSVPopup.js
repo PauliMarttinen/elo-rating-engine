@@ -139,6 +139,7 @@ const CSVPopup = ({onSave}) => {
   };
 
   const save = () => {
+    console.log("kokkelis");
     const parsedCSV = alphabetizeObjects(csvParser(CSVData), 0);
     const groups = getGroups(parsedCSV);
     const players = getPlayers(parsedCSV);
