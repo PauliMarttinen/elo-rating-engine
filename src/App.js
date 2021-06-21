@@ -69,6 +69,15 @@ const App = () => {
         0.25: 1/4,
         0: 0
       }[match.result];
+      /* const result = {
+        1: 1,
+        0.75: 1,
+        0.66: 1,
+        0.5: 1/2,
+        0.33: 0,
+        0.25: 0,
+        0: 0
+      }[match.result]; */
       
       const coefficient = 32;
       const scale = 400;
