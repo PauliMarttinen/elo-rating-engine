@@ -10,18 +10,13 @@ import {
 import csvParser from "./../utilities/csvParser";
 import alphabetizeObjects from "./../utilities/alphabetizeObjects";
 
-const CSVPopup = ({onSave}) => {
-  const [displayCSVPopup, setDisplayCSVPopup] = useState(false);
+const CSVPopup = ({onDismiss, onSave, open}) => {
   const [CSVData, setCSVData] = useState("");
 
   const EVENT_TYPES = {
     GROUP: "group",
     PLAYER: "player",
     MATCH: "match"
-  };
-
-  const toggleCSVPopup = () => {
-    setDisplayCSVPopup(!displayCSVPopup);
   };
 
   const changeCSVData = (event, data) => {
@@ -145,7 +140,6 @@ const CSVPopup = ({onSave}) => {
     const players = getPlayers(parsedCSV);
     const matches = getMatches(parsedCSV);
     onSave(groups, players, matches);
-    toggleCSVPopup();
   };
 
   const dialogProps = {
@@ -155,15 +149,11 @@ const CSVPopup = ({onSave}) => {
 
   return (
     <div className={"csv-popup"}>
-      <DefaultButton
-        onClick={toggleCSVPopup}>
-        Import/Export CSV
-      </DefaultButton>
       {
-        displayCSVPopup &&
+        open &&
         <Dialog
-          hidden={!displayCSVPopup}
-          onDismiss={toggleCSVPopup}
+          hidden={false}
+          onDismiss={onDismiss}
           dialogContentProps={dialogProps}>
           <TextField
             label="CSV"
@@ -178,7 +168,7 @@ const CSVPopup = ({onSave}) => {
               Save
             </PrimaryButton>
             <DefaultButton
-              onClick={toggleCSVPopup}>
+              onClick={onDismiss}>
               Cancel
             </DefaultButton>
           </DialogFooter>

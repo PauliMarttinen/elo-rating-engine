@@ -2,12 +2,14 @@
 import React, {useEffect, useState} from "react";
 
 import CSVPopup from "./popups/CSVPopup";
-import EloRatings from "./EloRatings";
+/* import EloRatings from "./EloRatings"; */
+import Matches from "./views/Matches";
+import Ratings from "./views/Ratings";
 import ManageGroups from "./views/ManageGroups";
 import ManagePlayers from "./views/ManagePlayers";
 import AddNewMatch from "./views/AddNewMatch";
 
-import './App.css';
+import './App.scss';
 import csvParser from "./utilities/csvParser";
 import formatDate from "./utilities/formatDate";
 import roundToFirstDecimalPoint from "./utilities/roundToFirstDecimalPoint";
@@ -17,14 +19,18 @@ import {DefaultButton} from "@fluentui/react";
 
 const App = () => {
   const VIEWS = {
-    MANAGE_GROUPS: 1,
-    MANAGE_PLAYERS: 2,
-    ADD_NEW_MATCH: 3
+    TABLE_OF_MATCHES: "TABLE_OF_MATCHES",
+    TABLE_OF_RATINGS: "TABLE_OF_RATINGS",
+    RATINGS_GRAPH: "RATINGS_GRAPH",
+    MANAGE_GROUPS: "MANAGE_GROUPS",
+    MANAGE_PLAYERS: "MANAGE_PLAYERS",
+    ADD_NEW_MATCH: "ADD_NEW_MATCH"
   };
 
   const [groups, setGroups] = useState([]);
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
+  const [CSVPopupOpen, setCSVPopupOpen] = useState(false);
   const [view, setView] = useState(VIEWS.ADD_NEW_MATCH)
 
   const getGroupNameAtTime = (data, time, id) => {
@@ -40,6 +46,10 @@ const App = () => {
   const getPlayerNameAtTime = (data, time, id) => {
     const player = data.find(datum => datum.id === id);
     return player.name[player.name.length - 1].name;
+  };
+
+  const dismissCSVPopup = () => {
+    setCSVPopupOpen(false);
   };
 
   const setData = (groupsData, playersData, matchesData) => {
@@ -130,20 +140,36 @@ const App = () => {
       };
     }));
     setPlayers(alphabetizeObjects(ratings, "rating").reverse());
+    dismissCSVPopup();
   };
-  /* }, [matches]); */
 
   return (
     <div className={"App"}>
       <h1>Elo Rating Engine</h1>
       <CSVPopup
+        open={CSVPopupOpen}
         onSave={setData}
+        onDismiss={dismissCSVPopup}
       />
-      <EloRatings
-        groups={groups}
-        players={players}
-        matches={matches}
-      />
+      <DefaultButton
+        onClick={() => setCSVPopupOpen(true)}>
+        Import/Export CSV
+      </DefaultButton>
+      <DefaultButton
+        disabled={view === VIEWS.TABLE_OF_MATCHES}
+        onClick={() => setView(VIEWS.TABLE_OF_MATCHES)}>
+        Table of Matches
+      </DefaultButton>
+      <DefaultButton
+        disabled={view === VIEWS.TABLE_OF_RATINGS}
+        onClick={() => setView(VIEWS.TABLE_OF_RATINGS)}>
+        Table of Ratings
+      </DefaultButton>
+      <DefaultButton
+        disabled={view === VIEWS.RATINGS_GRAPH}
+        onClick={() => setView(VIEWS.RATINGS_GRAPH)}>
+        Ratings Graph
+      </DefaultButton>
       <DefaultButton
         disabled={view === VIEWS.MANAGE_GROUPS}
         onClick={() => setView(VIEWS.MANAGE_GROUPS)}>
@@ -159,6 +185,18 @@ const App = () => {
         onClick={() => setView(VIEWS.ADD_NEW_MATCH)}>
         Add New Match
       </DefaultButton>
+      {
+        view === VIEWS.TABLE_OF_MATCHES &&
+        <Matches
+          matches={matches}
+        />
+      }
+      {
+        view === VIEWS.TABLE_OF_RATINGS &&
+        <Ratings
+          ratings={players}
+        />
+      }
       {
         view === VIEWS.MANAGE_GROUPS &&
         <ManageGroups
@@ -176,8 +214,8 @@ const App = () => {
       {
         view === VIEWS.ADD_NEW_MATCH &&
         <AddNewMatch
-          playersData={players}
-          groupsData={groups}
+          players={players}
+          groups={groups}
         />
       }
     </div>

@@ -49,7 +49,7 @@ const csvParser = (data) => {
 
     array.push(partials);
   }
-  /* console.log(array); */
+  
   return array;
 }
 

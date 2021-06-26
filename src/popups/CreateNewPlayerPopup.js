@@ -33,8 +33,7 @@ const CreateNewPlayerPopup = ({players}) => {
 
   const newPlayerDialogProps = {
     type: DialogType.largeHeader,
-    title: "Create a new player"/* ,
-    subText: "If the new player player starts with an undefined rating, the expected result of their first match is assumed to be 0.5. Therefore, if a new player is put against a known player, the new player's initial rating will match the known player's rating. If both players in that match are new, their initial rating is the average rating of their group." */
+    title: "Create a new player"
   };
 
   const changeNewPlayerName = (event, name) => {

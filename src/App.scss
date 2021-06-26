@@ -13,6 +13,58 @@ td {
   width: 33%;
 }
 
+.table-of-ratings
+{
+  .filters
+  {
+    display: flex;
+
+    .filter
+    {
+      flex-grow: 1;
+
+      &.player
+      {
+        padding-left: 5vw;
+      }
+
+      &.group
+      {
+        padding-right: 5vw;
+      }
+    }
+  }
+}
+
+.add-new-match
+{
+  .match-date, .result
+  {
+    width: 40%;
+    margin: 0 auto;
+  }
+
+  .players
+  {
+    display: flex;
+
+    .player
+    {
+      flex-grow: 1;
+      padding: 0 5vw;
+    }
+  }
+
+  .result .label
+  {
+    span
+    {
+      display: block;
+      text-align: center;
+    }
+  }
+}
+
 /* .ms-DatePicker, .ms-Dropdown-container
 {
   width: 30%;

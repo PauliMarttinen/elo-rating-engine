@@ -6,7 +6,6 @@ import {
 } from "@fluentui/react";
 import formatDate from "../utilities/formatDate";
 import alphabetizeObjects from "../utilities/alphabetizeObjects";
-//import CreateNewPlayerPopup from "../popups/CreateNewPlayerPopup";
 
 const AddNewMatch = ({players, onAddMatch}) => {
   const newPlayer = {player: undefined, group: undefined, rating: undefined};
