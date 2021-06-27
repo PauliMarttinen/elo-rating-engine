@@ -30,6 +30,10 @@ const AddNewMatch = ({groups, players}) => {
     }));
   };
 
+  const getPlayerRating = (index) => {
+    return players[index].rating;
+  };
+
   const resultDisplay = () => {
     switch (result)
     {
@@ -40,7 +44,7 @@ const AddNewMatch = ({groups, players}) => {
               1
             </Text>
             <Text className={"explanation"}>
-              Player A Wins
+              Player A Wins Clearly
             </Text>
           </div>
         );
@@ -51,7 +55,7 @@ const AddNewMatch = ({groups, players}) => {
               3/4
             </Text>
             <Text className={"explanation"}>
-              Player A Wins 
+              Player A Wins Safely
             </Text>
           </div>
         );
@@ -95,7 +99,7 @@ const AddNewMatch = ({groups, players}) => {
               1/4
             </Text>
             <Text className={"explanation"}>
-              Player B Wins
+              Player B Wins Safely
             </Text>
           </div>
         );
@@ -106,7 +110,7 @@ const AddNewMatch = ({groups, players}) => {
               0
             </Text>
             <Text className={"explanation"}>
-              Player B Wins
+              Player B Wins Clearly
             </Text>
           </div>
         );
@@ -170,6 +174,9 @@ const AddNewMatch = ({groups, players}) => {
           />
         </div>
         {resultDisplay()}
+      </div>
+      <div className={"new-ratings"}>
+
       </div>
     </div>
   );

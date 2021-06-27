@@ -5,6 +5,7 @@ import CSVPopup from "./popups/CSVPopup";
 /* import EloRatings from "./EloRatings"; */
 import Matches from "./views/Matches";
 import Ratings from "./views/Ratings";
+import Graph from "./views/Graph";
 import ManageGroups from "./views/ManageGroups";
 import ManagePlayers from "./views/ManagePlayers";
 import AddNewMatch from "./views/AddNewMatch";
@@ -134,8 +135,12 @@ const App = () => {
         playerB,
         playerAName,
         playerBName,
+        playerARatingBefore,
+        playerBRatingBefore,
         playerARatingChange: `${playerARatingBefore} → ${playerARatingAfter}`,
         playerBRatingChange: `${playerBRatingBefore} → ${playerBRatingAfter}`,
+        playerARatingAfter,
+        playerBRatingAfter,
         result
       };
     }));
@@ -195,6 +200,13 @@ const App = () => {
         view === VIEWS.TABLE_OF_RATINGS &&
         <Ratings
           ratings={players}
+        />
+      }
+      {
+        view === VIEWS.RATINGS_GRAPH &&
+        <Graph
+          players={players}
+          matches={matches}
         />
       }
       {
