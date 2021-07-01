@@ -156,7 +156,7 @@ const AddNewMatch = ({groups, players}) => {
           <Dropdown
             label={"Player B"}
             placeholder={"Player B"}
-            options={getPlayerOptions()}
+            options={alphabetizeObjects(getPlayerOptions(), "text")}
             onChange={changePlayerB}
             selectedKey={playerB === undefined ? undefined : playerB.player}
           />

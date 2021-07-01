@@ -36,6 +36,19 @@ td {
   }
 }
 
+.ratings-graph
+{
+  path.player-rating-graph
+  {
+    stroke-width: 1px;
+
+    &:hover
+    {
+      stroke-width: 3px;
+    }
+  }
+}
+
 .add-new-match
 {
   .match-date, .result

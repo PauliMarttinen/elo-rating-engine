@@ -60,6 +60,7 @@ const Graph = ({players, matches}) => {
         {
           players.map((player, index) => 
             <path
+              className={"player-rating-graph"}
               key={index}
               fill={"none"}
               stroke={"blue"}
